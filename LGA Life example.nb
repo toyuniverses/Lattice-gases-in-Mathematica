@@ -1,0 +1,337 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.4' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     11542,        329]
+NotebookOptionsPosition[     10541,        291]
+NotebookOutlinePosition[     10900,        307]
+CellTagsIndexPosition[     10857,        304]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["\<\
+LGA Kernel simulation Example: Game of Life
+(simulating a Moore neighborhood with a lattice gas)\
+\>", "Section",
+ CellChangeTimes->{{3.676746166253903*^9, 3.676746187506474*^9}, {
+  3.6767462868236637`*^9, 3.6767463245206747`*^9}, {3.67674637488876*^9, 
+  3.67674641284793*^9}, {3.6769148106023912`*^9, 3.676914843885667*^9}, {
+  3.676916042907386*^9, 3.6769160441730833`*^9}}],
+
+Cell[TextData[{
+ "J",
+ StyleBox["ohn Horton Conway\[CloseCurlyQuote]s famous \
+\[OpenCurlyDoubleQuote]Game of Life\[CloseCurlyDoubleQuote].  On a 3x3 \
+(Moore) neighborhood, if two of the eight nearest and next-nearest neighbors \
+are 1\[CloseCurlyQuote]s, the center is unchanged.  If three are ones, the \
+center becomes a 1.  Otherwise it becomes a zero (either from loneliness or \
+overcrowding, according to the usual story).",
+  FontColor->GrayLevel[0.5]]
+}], "Text",
+ CellChangeTimes->{{3.6777021340352707`*^9, 3.677702165882516*^9}}],
+
+Cell[BoxData[
+ RowBox[{"Lattice", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"X", "=", "256"}], ",", 
+     RowBox[{"Y", "=", "256"}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+    "center", ",", "north", ",", "south", ",", "east", ",", "west", ",", 
+     "nEast", ",", "nWest", ",", "sEast", ",", "sWest"}], "}"}]}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.67691484724435*^9, 3.676914979347569*^9}, 
+   3.676917170884663*^9, 3.676917216676668*^9}],
+
+Cell[TextData[StyleBox["To implement the Moore neighborhood as a lattice gas, \
+the new value of the center bit is copied eight times, so that its value can \
+be shown to the eight neighbors.",
+ FontColor->GrayLevel[0.5]]], "Text",
+ CellChangeTimes->{{3.677701832378686*^9, 3.677701849160863*^9}, {
+  3.677701903051568*^9, 3.677702139189727*^9}, {3.677702190700371*^9, 
+  3.6777021926762733`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"lifeLUT", " ", "=", 
+   RowBox[{"LUT", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "center", ",", "north", ",", "south", ",", "east", ",", "west", ",", 
+       "nEast", ",", "nWest", ",", "sEast", ",", "sWest"}], "}"}], ",", 
+     "\[IndentingNewLine]", " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"nSum", "=", 
+        RowBox[{
+        "north", " ", "+", " ", "south", " ", "+", "east", "+", "west", "+", 
+         "nEast", "+", "nWest", "+", "sEast", "+", "sWest"}]}], ";", 
+       "\[IndentingNewLine]", 
+       RowBox[{"newCenter", "=", 
+        RowBox[{"Which", "[", 
+         RowBox[{
+          RowBox[{"nSum", "\[Equal]", "2"}], ",", "center", ",", "  ", 
+          RowBox[{"nSum", "\[Equal]", "3"}], ",", "1", ",", "  ", "True", ",",
+           "0"}], "]"}]}], ";", "\[IndentingNewLine]", 
+       RowBox[{"Table", "[", 
+        RowBox[{"newCenter", ",", "9"}], "]"}]}], ")"}]}], "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.676915157857727*^9, 3.676915215565049*^9}, {
+   3.676915246207502*^9, 3.676915249854472*^9}, {3.67691528928906*^9, 
+   3.67691537506489*^9}, {3.676915425587117*^9, 3.676915467160198*^9}, {
+   3.676915505175057*^9, 3.676915607855283*^9}, {3.676915694458427*^9, 
+   3.676915709432708*^9}, 3.67691575880737*^9, {3.676915914117242*^9, 
+   3.6769159825942087`*^9}, 3.676917247657817*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"kicks", " ", "=", " ", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"0", ",", " ", "0"}], "}"}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"0", ",", " ", 
+       RowBox[{"+", "1"}]}], "}"}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"0", ",", " ", 
+       RowBox[{"-", "1"}]}], "}"}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"-", "1"}], ",", " ", "0"}], "}"}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"+", "1"}], ",", " ", "0"}], "}"}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"-", "1"}], ",", " ", 
+       RowBox[{"+", "1"}]}], "}"}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"+", "1"}], ",", " ", 
+       RowBox[{"+", "1"}]}], "}"}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"-", "1"}], ",", " ", 
+       RowBox[{"-", "1"}]}], "}"}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"+", "1"}], ",", " ", 
+       RowBox[{"-", "1"}]}], "}"}]}], "}"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.6779379062342997`*^9, 3.6779379062366047`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"lifeStep", "=", 
+   RowBox[{"Step", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "center", ",", "north", ",", "south", ",", "east", ",", "west", ",", 
+       "nEast", ",", "nWest", ",", "sEast", ",", "sWest"}], "}"}], ",", 
+     "kicks", ",", "lifeLUT", ",", 
+     RowBox[{"{", 
+      RowBox[{
+      "center", ",", "north", ",", "south", ",", "east", ",", "west", ",", 
+       "nEast", ",", "nWest", ",", "sEast", ",", "sWest"}], "}"}]}], "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.6769167882216167`*^9, 3.676916866765884*^9}, 
+   3.6769169371943703`*^9, {3.6769171473099318`*^9, 3.6769171600896597`*^9}, {
+   3.6774377981797867`*^9, 3.67743780166324*^9}}],
+
+Cell[TextData[StyleBox["We start the space with one bit at each cell randomly \
+assigned a value.",
+ FontColor->GrayLevel[0.5]]], "Text",
+ CellChangeTimes->{{3.677702214053439*^9, 3.677702258043441*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"randPat", "=", 
+   RowBox[{"Table", "[", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"rand", "=", 
+        RowBox[{"RandomInteger", "[", "]"}]}], ";", 
+       RowBox[{"Table", "[", 
+        RowBox[{"rand", ",", "9"}], "]"}]}], ")"}], ",", "Y", ",", "X"}], 
+    "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.6769161887218924`*^9, 3.6769163433465643`*^9}, 
+   3.6769164012120667`*^9, {3.6769164393490257`*^9, 3.676916439612783*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"WriteFields", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+     "center", ",", "north", ",", "south", ",", "east", ",", "west", ",", 
+      "nEast", ",", "nWest", ",", "sEast", ",", "sWest"}], "}"}], ",", 
+    "randPat"}], "]"}], ";"}]], "Input",
+ CellChangeTimes->{{3.6769164507865353`*^9, 3.676916481916418*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Dynamic", "[", "lifeImage", "]"}]], "Input",
+ CellChangeTimes->{{3.677279640464756*^9, 3.6772796476473837`*^9}, {
+  3.677280959040861*^9, 3.677280961428437*^9}, {3.6772812788653393`*^9, 
+  3.67728128079869*^9}}],
+
+Cell[BoxData[
+ DynamicBox[ToBoxes[$CellContext`lifeImage, StandardForm],
+  ImageSizeCache->{256., {126., 130.}}]], "Output",
+ CellChangeTimes->{3.677279711386281*^9, 3.677281002613105*^9, 
+  3.677281356483377*^9, 3.6774133798055267`*^9, 3.677437844792863*^9, 
+  3.6775056000573673`*^9, 3.6776098602090397`*^9, 3.6777010668131104`*^9, 
+  3.677702313223626*^9, 3.6777952265169697`*^9, 3.677916550232594*^9, 
+  3.677937924971817*^9, 3.677942670015689*^9, 3.677943806862021*^9, 
+  3.6917223357863083`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"run", "=", "True"}], ";", 
+  RowBox[{"Dynamic", "[", 
+   RowBox[{"Button", "[", 
+    RowBox[{"\"\<Stop\>\"", ",", 
+     RowBox[{"run", "=", "False"}]}], "]"}], "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"While", "[", 
+  RowBox[{"run", ",", 
+   RowBox[{"lifeImage", "=", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"UpdateLattice", "[", "lifeStep", "]"}], ";", " ", 
+      RowBox[{"Image", "[", 
+       RowBox[{"ReadFields", "[", "center", "]"}], "]"}]}], ")"}]}]}], 
+  "]"}]}], "Input",
+ CellChangeTimes->{{3.67727987048532*^9, 3.677279898517233*^9}, {
+  3.677279929075202*^9, 3.677279936047266*^9}, {3.677280078811948*^9, 
+  3.677280146205212*^9}, {3.6772801811680803`*^9, 3.677280184192918*^9}, {
+  3.6772802414180107`*^9, 3.6772802581152897`*^9}, {3.67728096772622*^9, 
+  3.677280976670618*^9}, {3.677281288575551*^9, 3.677281317632428*^9}, {
+  3.677437809885006*^9, 3.677437816278723*^9}}],
+
+Cell[BoxData[
+ DynamicBox[ToBoxes[
+   Button["Stop", $CellContext`run = False], StandardForm],
+  ImageSizeCache->{70., {8.3, 17.7}}]], "Output",
+ CellChangeTimes->{
+  3.677280147671335*^9, 3.6772801935735283`*^9, {3.677280272803691*^9, 
+   3.6772802861505833`*^9}, 3.677280332636683*^9, 3.677281002720707*^9, 
+   3.67728135660605*^9, 3.6772814354773006`*^9, 3.677413379893509*^9, 
+   3.677437844879084*^9, 3.6775056001462307`*^9, 3.677609860298135*^9, 
+   3.677701066897853*^9, 3.677702313303834*^9, 3.6777952266009483`*^9, 
+   3.677916550337926*^9, 3.677937925068075*^9, 3.677942670097913*^9, 
+   3.677943807003522*^9, 3.691722335875114*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"5", "/", 
+  RowBox[{
+   RowBox[{"Timing", "[", 
+    RowBox[{"UpdateLattice", "[", 
+     RowBox[{"lifeStep", ",", "5"}], "]"}], "]"}], "[", 
+   RowBox[{"[", "1", "]"}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.6775056438630133`*^9, 3.677505653182708*^9}, 
+   3.677942663261757*^9, {3.677943783338307*^9, 3.677943791318329*^9}}],
+
+Cell[BoxData["17.694104324439095`"], "Output",
+ CellChangeTimes->{3.677505674139701*^9, 3.677609896686904*^9, 
+  3.677701122251932*^9, 3.677702358483178*^9, 3.677795248449748*^9, 
+  3.677937974796892*^9, 3.6779426830824327`*^9, 3.677943812694429*^9, 
+  3.6917225997608747`*^9}]
+}, Open  ]],
+
+Cell[TextData[{
+ StyleBox["To animate, save a ",
+  FontColor->GrayLevel[0.5]],
+ StyleBox["Table",
+  FontWeight->"Bold",
+  FontColor->GrayLevel[0.5]],
+ StyleBox[" of images to ",
+  FontColor->GrayLevel[0.5]],
+ StyleBox["imageList ",
+  FontWeight->"Bold",
+  FontColor->GrayLevel[0.5]],
+ StyleBox["and use ",
+  FontColor->GrayLevel[0.5]],
+ StyleBox["ListAnimate[imageList]",
+  FontWeight->"Bold",
+  FontColor->GrayLevel[0.5]],
+ StyleBox[".  To export a movie, use ",
+  FontColor->GrayLevel[0.5]],
+ StyleBox["Export[\[OpenCurlyDoubleQuote]directory/name.mov\
+\[CloseCurlyDoubleQuote],imageList]",
+  FontWeight->"Bold",
+  FontColor->GrayLevel[0.5]]
+}], "Text",
+ CellChangeTimes->{{3.67770333925939*^9, 3.677703369205873*^9}, {
+  3.677703403048716*^9, 3.67770342009582*^9}, {3.6777034911035633`*^9, 
+  3.677703507720806*^9}}]
+}, Open  ]]
+},
+WindowSize->{824, 751},
+WindowMargins->{{303, Automatic}, {Automatic, 0}},
+FrontEndVersion->"11.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (September \
+21, 2016)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 388, 7, 99, "Section"],
+Cell[971, 31, 541, 10, 68, "Text"],
+Cell[1515, 43, 469, 13, 32, "Input"],
+Cell[1987, 58, 397, 6, 49, "Text"],
+Cell[2387, 66, 1381, 31, 96, "Input"],
+Cell[3771, 99, 1108, 35, 54, "Input"],
+Cell[4882, 136, 713, 17, 54, "Input"],
+Cell[5598, 155, 203, 3, 30, "Text"],
+Cell[5804, 160, 486, 13, 32, "Input"],
+Cell[6293, 175, 354, 9, 32, "Input"],
+Cell[CellGroupData[{
+Cell[6672, 188, 235, 4, 32, "Input"],
+Cell[6910, 194, 501, 8, 271, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[7448, 207, 931, 21, 54, "Input"],
+Cell[8382, 230, 642, 11, 43, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[9061, 246, 350, 8, 32, "Input"],
+Cell[9414, 256, 277, 4, 32, "Output"]
+}, Open  ]],
+Cell[9706, 263, 819, 25, 49, "Text"]
+}, Open  ]]
+}
+]
+*)
+
